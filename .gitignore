@@ -1,0 +1,11 @@
+# Ignorar el dataset para no saturar GitHub
+*.csv
+*.zip
+
+# Ignorar archivos del entorno virtual y VS Code
+venv/
+.venv/
+.vscode/
+.ipynb_checkpoints/
+
+.tool-versions
