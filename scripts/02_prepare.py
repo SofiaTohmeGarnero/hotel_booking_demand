@@ -44,3 +44,15 @@ if __name__ == "__main__":
 # ¡Partición completada con éxito!
 #  - Train: (74286, 32)
 #  - Test: (13110, 32)
+
+
+# Nota: Eliminacion de duplicados
+
+# * keep='first' (Por defecto): Mantiene la primera aparición de la fila y elimina los duplicados posteriores.
+# >> df_clean = df.drop_duplicates()
+
+# * keep='last': Mantiene la última aparición de la fila y elimina los duplicados anteriores. Útil si las filas de más abajo tienen información más actualizada.
+# >> df_clean = df.drop_duplicates(keep='last')
+
+# * keep=False: Elimina absolutamente todo lo que esté repetido. Si una fila aparece más de una vez, se borra por completo y no queda ni el original.
+# >> df_clean = df.drop_duplicates(keep=False)
