@@ -12,34 +12,25 @@ def main():
     df_clean = df.drop_duplicates()
     print(f"Filas sin duplicados: {df_clean.shape[0]}")
     
-    # 2. Separación Estratificada (Train 70%, Val 15%, Test 15%)
+    # 2. Separación Estratificada (Train 85%, Test 15%)
     # random_state=42 asegura que todos en el equipo obtengan el mismo corte
     print("Particionando los datos...")
-    df_train, df_temp = train_test_split(
+    df_train_before_eda, df_test = train_test_split(
         df_clean, 
-        test_size=0.30, 
+        test_size=0.15, 
         random_state=42, 
         stratify=df_clean['is_canceled']
-    )
-    
-    df_val, df_test = train_test_split(
-        df_temp, 
-        test_size=0.50, 
-        random_state=42, 
-        stratify=df_temp['is_canceled']
     )
     
     # 3. Guardar los subconjuntos
     splits_dir = './data/splits'
     os.makedirs(splits_dir, exist_ok=True)
     
-    df_train.to_csv(os.path.join(splits_dir, 'train.csv'), index=False)
-    df_val.to_csv(os.path.join(splits_dir, 'val.csv'), index=False)
+    df_train_before_eda.to_csv(os.path.join(splits_dir, 'train_before_eda.csv'), index=False)
     df_test.to_csv(os.path.join(splits_dir, 'test.csv'), index=False)
     
     print("¡Partición completada con éxito!")
-    print(f" - Train: {df_train.shape}")
-    print(f" - Validation: {df_val.shape}")
+    print(f" - Train: {df_train_before_eda.shape}")
     print(f" - Test: {df_test.shape}")
 
 if __name__ == "__main__":
@@ -51,6 +42,5 @@ if __name__ == "__main__":
 # Filas sin duplicados: 87396
 # Particionando los datos...
 # ¡Partición completada con éxito!
-#  - Train: (61177, 32) ---> (filas, columnas)
-#  - Validation: (13109, 32)
+#  - Train: (74286, 32)
 #  - Test: (13110, 32)

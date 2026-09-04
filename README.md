@@ -8,7 +8,7 @@ Asegúrate de mantener esta estructura. Ten en cuenta que la carpeta `data/` est
 
 *   `data/` 
     *   `raw/`: Dataset original.
-    *   `splits/`: Subconjuntos limpios y estratificados (`train.csv`, `val.csv`, `test.csv`).
+    *   `splits/`: Subconjuntos limpios y estratificados (`train_before_eda.csv`, `test.csv`).
 *   `notebooks/`: Jupyter Notebooks para el Análisis Exploratorio de Datos (EDA) y experimentación de modelos.
 *   `scripts/`: Scripts automatizados de Python para la ingesta y preparación de datos.
 
@@ -28,7 +28,7 @@ Ejecuta el script de preparación. Este código eliminará los registros duplica
 > `python scripts/02_prepare.py`
 
 **4. Regla de Oro para el Análisis**
-Al crear Notebooks para EDA o entrenamiento inicial, **debes cargar única y exclusivamente** el archivo `data/splits/train.csv` para evitar la fuga de información (data leakage).
+Al crear Notebooks para EDA o entrenamiento inicial, **debes cargar única y exclusivamente** el archivo `data/splits/train_before_eda.csv` para evitar la fuga de información (data leakage).
 
 ---
 
