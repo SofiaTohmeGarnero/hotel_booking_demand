@@ -8,7 +8,8 @@ Asegúrate de mantener esta estructura. Ten en cuenta que la carpeta `data/` est
 
 *   `data/` 
     *   `raw/`: Dataset original.
-    *   `splits/`: Subconjuntos limpios y estratificados (`train_before_eda.csv`, `test.csv`).
+    *   `splits/`: Subconjuntos limpios y estratificados (`train_before_eda.csv`, `test.csv`) según partición aleatoria.
+    *   `time-based-splits/`: Subconjuntos limpios (`train_before_eda.csv`, `test.csv`) según partición temporal.
 *   `notebooks/`: Jupyter Notebooks para el Análisis Exploratorio de Datos (EDA) y experimentación de modelos.
 *   `scripts/`: Scripts automatizados de Python para la ingesta y preparación de datos.
 
@@ -24,8 +25,10 @@ Ejecuta el script de descarga. Esto obtendrá el archivo `hotel_bookings.csv` y 
 > `python scripts/01_download.py`
 
 **3. Limpiar y particionar los datos**
-Ejecuta el script de preparación. Este código eliminará los registros duplicados y creará los cortes estratificados de Entrenamiento, Validación y Prueba usando una semilla fija (`random_state=42`).
-> `python scripts/02_prepare.py`
+Ejecuta el script de preparación. Este código eliminará los registros duplicados y creará los cortes estratificados de Entrenamiento y Prueba.
+> `python scripts/02_prepare.py`  # partición aleatoria usando una semilla fija (`random_state=42`)
+
+> `python scripts/02_time-based-splitting.py` # partición temporal según la fecha de reserva (booking_date)
 
 **4. Regla de Oro para el Análisis**
 Al crear Notebooks para EDA o entrenamiento inicial, **debes cargar única y exclusivamente** el archivo `data/splits/train_before_eda.csv` para evitar la fuga de información (data leakage).
