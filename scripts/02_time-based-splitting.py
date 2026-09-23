@@ -27,7 +27,7 @@ def create_booking_date(df: pd.DataFrame) -> pd.DataFrame:
     df_copy['booking_date'] = df_copy['arrival_date'] - pd.to_timedelta(df_copy['lead_time'], unit='D')
     
     # Eliminar columnas auxiliares para mantener limpio el DataFrame
-    df_copy.drop(columns=['arrival_month_num', 'arrival_date'], inplace=True)
+    #df_copy.drop(columns=['arrival_month_num', 'arrival_date'], inplace=True)
     
     return df_copy
 
