@@ -7,5 +7,6 @@ venv/
 .venv/
 .vscode/
 .ipynb_checkpoints/
+.DS_Store
 
 .tool-versions
