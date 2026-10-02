@@ -11,7 +11,7 @@ def aplicar_limpieza(df: pd.DataFrame, adr_median: float) -> pd.DataFrame:
     cols_to_drop = [
         'reservation_status', 'reservation_status_date', 'assigned_room_type', 
         'booking_changes', 'arrival_date_day_of_month', 'arrival_date_week_number',
-        'previous_bookings_not_canceled', 'arrival_date_month', 'arrival_date_str'
+        'previous_bookings_not_canceled', 'arrival_date_month'
     ]
     df_clean.drop(columns=[c for c in cols_to_drop if c in df_clean.columns], inplace=True)
     
