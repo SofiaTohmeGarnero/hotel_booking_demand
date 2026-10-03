@@ -7,31 +7,41 @@ Este repositorio contiene el código, los datos y los experimentos para analizar
 Asegúrate de mantener esta estructura. Ten en cuenta que la carpeta `data/` está ignorada en el control de versiones (Git) por buenas prácticas y seguridad.
 
 *   `data/` 
-    *   `raw/`: Dataset original.
-    *   `splits/`: Subconjuntos limpios y estratificados (`train_before_eda.csv`, `test.csv`) según partición aleatoria.
-    *   `time-based-splits/`: Subconjuntos limpios (`train_before_eda.csv`, `test.csv`) según partición temporal.
+    *   `raw/`: Dataset original descargado de Kaggle.
+    *   `time-based-splits/`: Subconjuntos iniciales (`train_before_eda.csv`, `test.csv`) particionados cronológicamente.
+    *   `processed/`: Datasets limpios y con *feature engineering* aplicado (`train_clean.csv`, `test_clean.csv`).
+    *   `model_input/`
+        *   `static/`: Matrices de características y etiquetas (X, y) para entrenamiento con validación estática (Train 70%, Val 15%, Test 15%).
+        *   `cv/`: Matrices de características y etiquetas (X, y) preparadas para validación cruzada temporal (Train Full 85%, Test 15%).
+*   `docs/`: Documentación adicional del proyecto, referencias y notas.
+*   `models/`: Modelos de Machine Learning entrenados y guardados para su posterior uso o despliegue.
 *   `notebooks/`: Jupyter Notebooks para el Análisis Exploratorio de Datos (EDA) y experimentación de modelos.
-*   `scripts/`: Scripts automatizados de Python para la ingesta y preparación de datos.
+*   `scripts/`: Scripts automatizados de Python para la ingesta, preparación y procesamiento de datos.
 
 ## 🚀 Instrucciones de Configuración (Para el equipo)
 
-Para garantizar la reproducibilidad matemática y que todos trabajemos exactamente con las mismas particiones de datos, sigue estos pasos en orden:
+Para garantizar la reproducibilidad matemática y que todos trabajemos exactamente con las mismas particiones de datos, sigue estos pasos en orden ejecutando los scripts:
 
-**1. Abrir la terminal**
-Ubícate en la carpeta raíz del proyecto desde tu línea de comandos.
-
-**2. Descargar el dataset original**
-Ejecuta el script de descarga. Esto obtendrá el archivo `hotel_bookings.csv` y lo guardará en `data/raw/`.
+**1. Descargar el dataset original**
+Conecta con Kaggle y descarga el archivo `hotel_bookings.csv` guardándolo en `data/raw/`.
 > `python scripts/01_download.py`
 
-**3. Limpiar y particionar los datos**
-Ejecuta el script de preparación. Este código eliminará los registros duplicados y creará los cortes estratificados de Entrenamiento y Prueba.
-> `python scripts/02_prepare.py`  # partición aleatoria usando una semilla fija (`random_state=42`)
+**2. Partición temporal inicial**
+Elimina registros duplicados, crea la variable `booking_date` y realiza un corte cronológico (85% Train, 15% Test).
+> `python scripts/02_time-based-splitting.py`
 
-> `python scripts/02_time-based-splitting.py` # partición temporal según la fecha de reserva (booking_date)
+**3. Preprocesamiento y Feature Engineering**
+Aplica las reglas de limpieza definidas en el EDA (manejo de nulos, outliers, data leakage) a los subconjuntos temporales.
+> `python scripts/03_preprocessing.py`
 
-**4. Regla de Oro para el Análisis**
-Al crear Notebooks para EDA o entrenamiento inicial, **debes cargar única y exclusivamente** el archivo `data/splits/train_before_eda.csv` para evitar la fuga de información (data leakage).
+**4. Preparar matrices para modelado (Elige una o ambas opciones)**
+*   **Para enfoque de Split Estático:** Genera las matrices X e y dividiendo en Train, Validation y Test.
+    > `python scripts/04a_prep_static_split.py`
+*   **Para enfoque de Cross Validation:** Genera las matrices X e y para usar con `TimeSeriesSplit`.
+    > `python scripts/04b_prep_cv_split.py`
+
+**⚠️ Regla de Oro para el Análisis Exploratorio (EDA)**
+Al crear Notebooks para EDA, **debes cargar única y exclusivamente** el archivo `data/time-based-splits/train_before_eda.csv` para evitar la fuga de información (data leakage).
 
 ---
 
