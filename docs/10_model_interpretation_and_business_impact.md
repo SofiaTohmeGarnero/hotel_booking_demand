@@ -64,3 +64,56 @@ En este Notebook 10, cuando hagamos la simulación del impacto de negocio (cuán
 El Test Set lo usaremos **una única vez** en la última fase, justo antes de guardar el archivo `.pkl` final, para poder decir: *"Señores, este modelo que vamos a poner en producción tiene una precisión comprobada del X% en datos que jamás había visto"*.
 
 ¿Queda clara la diferencia entre usar CV para *buscar* el modelo vs entrenar con todo el Train para *construir* el modelo definitivo?
+
+---
+
+La comparación entre la importancia de variables (Feature Importance) de Random Forest (RF) y Gradient Boosting (GB) es una de las partes más reveladoras de tu proyecto integrador. Muestra exactamente las diferencias algorítmicas entre el aprendizaje en paralelo (Bagging) y el aprendizaje secuencial (Boosting).
+
+#### 1.Las 3 Diferencias Principales (RF vs. GB)
+
+**Las variables continuas suben fuertemente en Random Forest**
+- adr (Tarifa Media Diaria):
+   - Random Forest: $7.45\%$ (5.ª más importante).
+   - Gradient Boosting: $1.98\%$ (11.ª posición).
+- total_nights (Noches totales):
+   - Random Forest: $4.37\%$ (8.ª posición).
+   - Gradient Boosting: $1.41\%$ (12.ª posición).
+
+¿Por qué ocurre esto?
+
+Random Forest construye árboles de decisión profundos e independientes a partir de submuestras aleatorias de variables (max_features). Al forzar al algoritmo a elegir subconjuntos aleatorios en cada división, las variables continuas con alta cardinalidad (como adr) tienen muchas oportunidades de ser seleccionadas como puntos de corte (splits), lo que incrementa su importancia basada en impureza de Gini.
+
+**Gradient Boosting concentra su poder en pocos "Features Estrella"**
+- En Gradient Boosting, las 4 variables principales (lead_time, market_segment_Online TA, total_of_special_requests, is_portugal) suman casi el $58\%$ de toda la importancia del modelo.
+- En Random Forest, esas mismas variables están mucho más repartidas y suavizadas (suman el $41\%$).
+
+¿Por qué ocurre esto?
+
+Gradient Boosting construye árboles de manera secuencial para corregir los errores residenciales del árbol anterior. En las primeras iteraciones, el algoritmo detecta y explota de manera voraz (greedy) las variables con mayor señal global.
+
+**El caso particular de market_segment_Online TA**
+- Gradient Boosting: $14.98\%$ (2.ª más importante).
+- Random Forest: $5.79\%$ (6.ª posición).
+En Gradient Boosting, pertenecer al canal Online TA es una señal crítica para corregir residuos de cancelación, mientras que Random Forest distribuye esa importancia entre otros canales interconectados como market_segment_Offline TA/TO ($2.91\%$) o deposit_type_No Deposit ($2.31\%$).
+
+#### 2.Tabla Comparativa Directa
+
+| Variable | Importancia Gradient Boosting | Importancia Random Forest | Comportamiento del Algoritmo |
+| :-------------------- | :-----------------: | :--------------: | :----------------: |
+| lead_time | 16.12% | 14.84% | Coincidencia total: es la variable dominante en ambos modelos.
+| total_of_special_requests | 14.53% | 10.39% | Altísima importancia en ambos (fuerte indicador de intención). |
+| is_portugal | 12.55% | 10.33% | Clave en ambos (efecto del mercado local). |
+| market_segment_Online TA | 14.98% | 5.79% | GB la explota masivamente; RF la diluye con otros canales. |
+| adr | 1.98% | 7.45% | RF favorece la alta cardinalidad de esta variable continua. |
+| total_nights | 1.41% | 4.37% | Mayor peso en RF debido al muestreo aleatorio de características. |
+
+#### 3.¿Cómo defender esta comparación en tu proyecto?
+- Consistencia estructural: A pesar de las diferencias mecánicas de cada algoritmo, ambos coinciden en que el núcleo duro de la predicción de cancelaciones reside en:
+   - Anticipación del viaje: lead_time.
+   - Involucramiento del cliente: total_of_special_requests.
+   - Geografía / Mercado: is_portugal.
+   - Intermediario / Canal: agent y market_segment_Online TA.
+
+- Justificación de la elección del modelo:
+   - Si preferís un modelo que se enfoque intensamente en las señales categóricas y de canal más determinantes con menos árboles, Gradient Boosting es ideal.
+   - Si buscás un modelo más suavizado y distribuido que soporte bien la variabilidad de variables numéricas continuas como adr, Random Forest ofrece esa dispersión de riesgo.
